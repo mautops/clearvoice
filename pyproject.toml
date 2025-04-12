@@ -1,0 +1,22 @@
+[project]
+name = "clearvoice"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "datasets==2.13.0",
+    "flask>=3.1.0",
+    "flask-socketio>=5.5.1",
+    "librosa>=0.11.0",
+    "modelscope==1.9.5",
+    "pyaudio>=0.2.14",
+    "pydantic>=2.11.3",
+    "python-socketio>=5.12.1",
+    "ruff>=0.11.4",
+    "setuptools>=78.1.0",
+    "torch>=2.6.0",
+    "torchaudio>=2.6.0",
+    "torchvision>=0.21.0",
+    "websocket-client>=1.8.0",
+]
