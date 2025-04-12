@@ -1,11 +1,10 @@
-FROM ubuntu:22.04
+FROM m.daocloud.io/docker.io/library/python:3.10
 
 WORKDIR /workspace
 
 COPY . .
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | bash \
-    && source $HOME/.local/bin/env \
-    && uv sync
+RUN which python && python --version && \
+    pip install -r requirements.txt gevent -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
 CMD ["python", "server.py"]

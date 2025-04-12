@@ -18,4 +18,10 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 if __name__ == "__main__":
     logger.info("WebSocket 服务器已启动...")
     socketio.on_namespace(VoiceEnhancerNamespace("/enhancer"))
-    socketio.run(app, debug=True, host="0.0.0.0", port=5000)
+    socketio.run(
+        app,
+        debug=False,
+        host="0.0.0.0",
+        port=5000,
+        allow_unsafe_werkzeug=True,
+    )

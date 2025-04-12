@@ -84,7 +84,7 @@ if __name__ == "__main__":
     sio.register_namespace(VoiceEnhancerNamespace("/enhancer"))
     try:
         # 连接到服务器
-        sio.connect("ws://127.0.0.1:5000")
+        sio.connect("ws://0.0.0.0:5001")
         sio.wait()
     except KeyboardInterrupt:
         logger.info("手动断开连接")
