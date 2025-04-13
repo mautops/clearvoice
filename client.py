@@ -78,6 +78,9 @@ class VoiceEnhancerNamespace(socketio.ClientNamespace):
         stream.close()
         p.terminate()
 
+        # 断开连接
+        self.emit("disconnect", {"reason": "任务处理完成"})
+
 
 if __name__ == "__main__":
     sio = socketio.Client()
