@@ -1,3 +1,4 @@
+import time
 import pyaudio
 import logging
 import socketio
@@ -10,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 class VoiceEnhancerNamespace(socketio.ClientNamespace):
     """语音增强器命名空间"""
+
+    TASK_COMPLETED = False
 
     def on_connect(self) -> None:
         logger.info("客户端连接成功")
@@ -24,6 +27,8 @@ class VoiceEnhancerNamespace(socketio.ClientNamespace):
 
     def on_disconnect(self, reason: str) -> None:
         logger.info(f"客户端断开连接, 原因: {reason}")
+        # 设置任务完成标志
+        self.TASK_COMPLETED = True
 
     def on_enter_room(self, data: Dict) -> None:
         """加入房间
@@ -79,15 +84,30 @@ class VoiceEnhancerNamespace(socketio.ClientNamespace):
         p.terminate()
 
         # 断开连接
-        self.emit("disconnect", {"reason": "任务处理完成"})
+        self.TASK_COMPLETED = True
+
+
+def background_task(sio: socketio.Client, ns_voice_enhancer: VoiceEnhancerNamespace):
+    while not ns_voice_enhancer.TASK_COMPLETED:
+        time.sleep(1)
+    logger.info("音频处理任务完成，程序退出")
+    sio.disconnect()
 
 
 if __name__ == "__main__":
     sio = socketio.Client()
-    sio.register_namespace(VoiceEnhancerNamespace("/enhancer"))
+
+    # 注册命名空间
+    ns_voice_enhancer = VoiceEnhancerNamespace("/enhancer")
+    sio.register_namespace(ns_voice_enhancer)
+
+    # 启动后台任务
+    task = sio.start_background_task(background_task, sio, ns_voice_enhancer)
+
     try:
         # 连接到服务器
         sio.connect("ws://0.0.0.0:5001")
+        # 等待任务完成
         sio.wait()
     except KeyboardInterrupt:
         logger.info("手动断开连接")
